@@ -18,3 +18,11 @@ Versión 2:
 - **Trazos**: líneas, curvas, zigzag y espirales para preparar la mano antes de escribir (sigue en Letrilandia).
 - **Días especiales**: cumpleaños, Navidad, Carnaval y Día del Libro.
 - **Monedas y tienda**: gana monedas jugando y las cambia por ropa y colores para Tito, cosas para su casa, juguetes, mascotas y vales para canjear en la vida real (los vales los elige la familia en la zona de adultos). Las zonas se abren por edad o juntando flores, y las cosas más especiales de la tienda, con estrellas. No hay compras con dinero real ni premios al azar.
+
+Versión 3:
+
+- **Un camino en orden**: los temas se abren de a uno y, dentro de cada tema, los juegos también (con números, candados y una flecha que marca el que sigue). El botón verde del mapa lleva siempre a lo que toca. Lo ya jugado se puede repetir. Canciones, rutinas, trazos y días especiales se abren al terminar 1, 2, 3 y 4 temas.
+- **Cofre del tesoro** al terminar cada tema: se abre con tres toques y trae un regalo sorpresa para Tito o su casa (siempre en el mismo orden) y diez monedas.
+- **La casa de Tito en el mapa**, grande y a la vista: crece al terminar 2, 5, 9 y 14 temas (jardín con cerca, segundo piso, torre con bandera y castillo con arcoíris).
+- **Pipo, el dinosaurio de Tito**: aparece como huevo y nace y crece a medida que se terminan juegos.
+- En la zona de adultos se puede desactivar el orden ("Abrir todos los temas y juegos").
