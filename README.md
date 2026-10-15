@@ -25,4 +25,4 @@ Versión 3:
 - **Cofre del tesoro** al terminar cada tema: se abre con tres toques y trae un regalo sorpresa para Tito o su casa (siempre en el mismo orden) y diez monedas.
 - **La casa de Tito en el mapa**, grande y a la vista: crece al terminar 2, 5, 9 y 14 temas (jardín con cerca, segundo piso, torre con bandera y castillo con arcoíris).
 - **Pipo, el dinosaurio de Tito**: aparece como huevo y nace y crece a medida que se terminan juegos.
-- En la zona de adultos se puede desactivar el orden ("Abrir todos los temas y juegos").
+- **Modo de juego** en la zona de adultos: *Camino* (por defecto, todo se abre de a uno) o *Libre* (todos los temas, juegos y zonas abiertos, también los de 4 y 5 años). Se puede cambiar cuando se quiera sin perder lo jugado.

@@ -4499,12 +4499,15 @@ function openAdult(){
   const vname=VOICE?`${VOICE.name} (${VOICE.lang})`:'no se encontró una voz en español en este dispositivo';
   const sug=suggestTema();
   el.querySelector('.body').innerHTML=`
+  <section><h3>Modo de juego</h3>
+   <div class="row">${[['camino','<b>Camino</b> (recomendado): todo se abre de a uno'],['libre','<b>Libre</b> (todo abierto)']].map(([k,l])=>`<label class="opt"><input type="radio" name="a-mode" value="${k}" ${(k==='libre')===!!S.unlockAll?'checked':''}> ${l}</label>`).join('')}</div>
+   <p class="note"><b>Camino:</b> los temas son un camino y se abren de a uno; dentro de cada tema, los juegos también se abren en orden. El botón verde del mapa lleva siempre al que sigue y lo ya jugado se puede repetir. El Bosque de 4 años y la Montaña de 5 años se abren con la edad elegida o al juntar 6 flores en la zona anterior. Canciones, rutinas, trazos y días especiales se abren al terminar 1, 2, 3 y 4 temas.</p>
+   <p class="note"><b>Libre:</b> se puede elegir cualquier tema, cualquier juego y cualquier zona, también las de 4 y 5 años, sin importar la edad. Se puede cambiar en cualquier momento y no se pierde nada de lo jugado.</p></section>
   <section><h3>Perfil</h3>
    <label>Nombre de quien juega <input id="a-name" maxlength="20" value="${esc(S.name||'')}" placeholder="Opcional"></label>
    <div class="row"><span>Edad</span>${[3,4,5].map(n=>`<label class="opt"><input type="radio" name="a-age" value="${n}" ${S.age===n?'checked':''}> ${n} años</label>`).join('')}</div>
    <div class="row"><span>Cumpleaños</span><select id="a-bd">${['—',...Array.from({length:31},(_,i)=>i+1)].map((d,i)=>`<option value="${i}" ${S.bday&&S.bday.d===i?'selected':''}>${d}</option>`).join('')}</select><select id="a-bm">${['—',...MESES].map((m,i)=>`<option value="${i}" ${S.bday&&S.bday.m===i-1?'selected':''}>${m}</option>`).join('')}</select></div>
-   <p class="note">El día del cumpleaños, la Asamblea lo celebra con una torta y velitas. Las zonas se abren por edad: con 3 años está el Jardín; con 4, también el Bosque; con 5, también la Montaña. Además, al juntar 6 flores en una zona se abre la siguiente.</p>
-   <p class="note"><b>Orden del juego:</b> los temas son un camino y se abren de a uno; dentro de cada tema, los juegos también se abren en orden. El botón verde del mapa lleva siempre al que sigue. Lo ya jugado se puede repetir. Las canciones, rutinas, trazos y días especiales se abren al terminar 1, 2, 3 y 4 temas del camino.</p></section>
+   <p class="note">El día del cumpleaños, la Asamblea lo celebra con una torta y velitas.</p></section>
   <section><h3>Idioma y voz</h3>
    <div class="row"><span>Palabras</span>${[['ar','Rioplatense (vos, remera, auto)'],['es','España (tú, camiseta, coche)']].map(([k,l])=>`<label class="opt"><input type="radio" name="a-var" value="${k}" ${S.variant===k?'checked':''}> ${l}</label>`).join('')}</div>
    <div class="row"><span>Estaciones</span>${[['N','Hemisferio norte (España)'],['S','Hemisferio sur (Argentina, Uruguay)']].map(([k,l])=>`<label class="opt"><input type="radio" name="a-hemi" value="${k}" ${S.hemi===k?'checked':''}> ${l}</label>`).join('')}</div>
@@ -4519,8 +4522,7 @@ function openAdult(){
    <p>Tiene <b>${S.coins}</b> monedas (ganó ${S.coinsTot} en total) y <b>${STARS()}</b> estrellas.</p>
    <p class="note">Gana 1 moneda por cada acierto a la primera (hasta 5 por juego), 3 al terminar un juego nuevo, 2 al repetirlo, 10 en el cofre del tesoro al completar un tema (que además trae un regalo sorpresa para Tito o su casa), 3 de regalo al entrar cada día y 5 al terminar la Asamblea. Con las monedas compra ropa y colores para Tito, cosas para su casa, juguetes y mascotas. Las cosas más especiales se abren con estrellas (una por cada juego terminado). La casa de Tito crece en el mapa al terminar 2, 5, 9 y 14 temas, y Pipo, su dinosaurio, nace y crece con las estrellas (4, 15, 35 y 70). Lleva abiertos <b>${S.cofres||0}</b> cofres. No hay compras con dinero real ni premios al azar.</p>
    <h4>Vales para canjear en la vida real</h4><p class="note">Los vales marcados aparecen en la tienda. Cuando compre uno, aparece abajo para que se lo den.</p>${vales}
-   ${pend?`<h4>Vales por entregar</h4>${pend}`:''}
-   <label class="opt"><input type="checkbox" id="a-unlock" ${S.unlockAll?'checked':''}> Abrir todos los temas y juegos sin seguir el orden (no recomendado: el camino ayuda a avanzar de a poco)</label></section>
+   ${pend?`<h4>Vales por entregar</h4>${pend}`:''}</section>
   ${sug?`<section><h3>Lo que sigue</h3><p class="tip">Próximo tema del camino: <b>${esc(V(sug.n))}</b>. Para seguir fuera de la pantalla: ${esc(tx(sug.tip||'nombrar juntos las cosas del tema que encuentren en casa o en la calle.'))}</p></section>`:''}
   <section><h3>Asambleas</h3><p class="note">El tiempo que eligió y cómo se sentía cada día.</p><div class="cal">${cal}</div></section>
   <section><h3>Cómo le va</h3>${sk?`<table><thead><tr><th>Habilidad</th><th>Aciertos</th><th>Intentos</th><th></th></tr></thead><tbody>${sk}</tbody></table>`:'<p class="note">Todavía no hay datos.</p>'}</section>
@@ -4543,7 +4545,7 @@ function openAdult(){
   el.querySelectorAll('[data-vtxt]').forEach(c=>c.oninput=()=>{const t=c.value.trim();if(t){S.vales[+c.dataset.vtxt].txt=t;save()}});
   el.querySelectorAll('[data-vp]').forEach(c=>c.onchange=()=>{const n=Math.round(+c.value);if(n>=1){S.vales[+c.dataset.vp].p=Math.min(500,n);save()}});
   el.querySelectorAll('[data-vgive]').forEach(b=>b.onclick=()=>{S.valesLog[+b.dataset.vgive].given=1;save();openAdult()});
-  q('#a-unlock').onchange=e=>{S.unlockAll=e.target.checked;save()};
+  el.querySelectorAll('[name=a-mode]').forEach(r=>r.onchange=()=>{S.unlockAll=r.value==='libre';S.seenOpen={};if(!S.unlockAll)for(const z of['bosque','montana'])if(!zoneOpen(z))delete S.woke[z];save()});
   q('#a-reset').onclick=()=>{q('#a-confirm').hidden=false};q('#a-no').onclick=()=>{q('#a-confirm').hidden=true};
   q('#a-yes').onclick=()=>{closeAdult();doReset()};
 }
