@@ -834,7 +834,7 @@ const TU=[['las bananas','los plátanos'],['la banana','el plátano'],['una bana
  ['sos','eres'],['llamás','llamas'],['jugás','juegas'],['fijate','fíjate'],['esperá','espera'],['sentís','sientes'],['hacés','haces'],['hacé','haz'],['ponete','ponte'],['sacá','saca'],['soplá','sopla'],
  ['tomá','toma'],['respirá','respira'],['pedile','pídele'],['abrazá','abraza'],['seguí','sigue'],['volvé','vuelve'],['acordate','acuérdate'],['dale','vale'],['vos','tú'],['pasá','pasa'],['agarrá','coge'],
  ['empezá','empieza'],['terminá','termina'],['llená','llena'],['tirá','tira'],['salís','sales'],['estás','estás'],['cuidás','cuidas'],['regás','riegas'],['tapá','tapa'],['frotá','frota'],['limpiá','limpia'],['sacudí','sacude'],['sonreí','sonríe'],['dejá','deja'],['tocalo','tócalo'],['tocala','tócala'],['llevala','llévala'],['llevalas','llévalas'],['llevalo','llévalo'],['llevalos','llévalos'],['atrapalas','atrápalas'],['atrapalos','atrápalos'],['buscalo','búscalo'],['buscala','búscala'],['girá','gira'],['contá','cuenta'],['llamás','llamas'],
- ['comprás','compras'],['comprá','compra'],['ganás','ganas'],['mostráselo','enséñaselo'],['mostrale','enséñale'],['acomodá','coloca'],['tocalas','tócalas'],['tocalos','tócalos'],['tocala','tócala'],['juntás','juntas'],['canjeás','canjeas'],['el moño','el lazo'],['moño','lazo'],['el trencito','el trenecito'],['trencito','trenecito'],['cantá','canta'],['cantás','cantas'],['seguilo','síguelo'],['seguila','síguela'],['dibujá','dibuja'],['unila','únela'],['uní','une'],['soplale','sóplale'],['decorá','decora'],['disfrazá','disfraza'],['lavá','lava'],['secá','seca'],['cepillá','cepilla'],['enjuagá','enjuaga'],['mojá','moja'],['tenías','tenías'],['andá','ve'],['subí','sube'],['bajá','baja'],['apagá','apaga'],['prendé','enciende'],['cerrá','cierra'],['abrí','abre'],['pensá','piensa'],['adiviná','adivina'],['escondé','esconde'],['pegá','pega'],['mové','mueve'],['movés','mueves'],['ordenás','ordenas'],['inflá','infla'],['probalas','pruébalas'],['probalos','pruébalos'],['ordenalas','ordénalas'],['ordenalos','ordénalos'],['una carpa','una tienda de campaña'],['la frazada','la manta'],['frazada','manta'],['terminás','terminas'],['abrilo','ábrelo']];
+ ['comprás','compras'],['comprá','compra'],['ganás','ganas'],['mostráselo','enséñaselo'],['mostrale','enséñale'],['acomodá','coloca'],['tocalas','tócalas'],['tocalos','tócalos'],['tocala','tócala'],['juntás','juntas'],['canjeás','canjeas'],['el moño','el lazo'],['moño','lazo'],['el trencito','el trenecito'],['trencito','trenecito'],['cantá','canta'],['cantás','cantas'],['seguilo','síguelo'],['seguila','síguela'],['dibujá','dibuja'],['unila','únela'],['uní','une'],['soplale','sóplale'],['decorá','decora'],['disfrazá','disfraza'],['lavá','lava'],['secá','seca'],['cepillá','cepilla'],['enjuagá','enjuaga'],['mojá','moja'],['tenías','tenías'],['andá','ve'],['subí','sube'],['bajá','baja'],['apagá','apaga'],['prendé','enciende'],['cerrá','cierra'],['abrí','abre'],['pensá','piensa'],['adiviná','adivina'],['escondé','esconde'],['pegá','pega'],['mové','mueve'],['movés','mueves'],['ordenás','ordenas'],['inflá','infla'],['probalas','pruébalas'],['probalos','pruébalos'],['ordenalas','ordénalas'],['ordenalos','ordénalos'],['una carpa','una tienda de campaña'],['la frazada','la manta'],['frazada','manta'],['terminás','terminas'],['reventá','revienta'],['repetilo','repítelo'],['jugá','juega'],['repetí','repite'],['abrilo','ábrelo']];
 const _tuRe=TU.map(([a,b])=>[new RegExp('(^|[^\\p{L}])('+a+')(?=[^\\p{L}]|$)','giu'),b]);
 function tx(s){
   if(S.variant!=='es'||!s)return s;
@@ -1031,9 +1031,12 @@ function musicTick(){
   }
 }
 /* ---------- voz ---------- */
-let VOICE=null,talking=false,sayTok=0;
+let VOICE=null,VOICE_EN=null,talking=false,sayTok=0;
 function pickVoice(){
-  if(!('speechSynthesis' in window))return; const vs=speechSynthesis.getVoices().filter(v=>/^es/i.test(v.lang)); if(!vs.length)return;
+  if(!('speechSynthesis' in window))return; const all=speechSynthesis.getVoices(),en=all.filter(v=>/^en/i.test(v.lang));
+  if(en.length){const pe=S.variant==='es'?['en-GB','en-IE','en-US','en-AU']:['en-US','en-GB','en-CA','en-AU'],Le=v=>v.lang.replace('_','-').toLowerCase();VOICE_EN=null;
+    for(const p of pe){const c=en.filter(v=>Le(v)===p.toLowerCase());if(c.length){VOICE_EN=c.find(v=>/google|natural|premium|enhanced/i.test(v.name))||c[0];break}}if(!VOICE_EN)VOICE_EN=en[0]}
+  const vs=all.filter(v=>/^es/i.test(v.lang)); if(!vs.length)return;
   const pref=S.variant==='es'?['es-ES','es-MX','es-US','es-419','es-AR']:['es-AR','es-UY','es-US','es-419','es-MX','es-CO','es-ES'];
   const L=v=>v.lang.replace('_','-');
   for(const p of pref){const c=vs.filter(v=>L(v).toLowerCase()===p.toLowerCase()); if(c.length){VOICE=c.find(v=>/google|natural|premium|enhanced/i.test(v.name))||c[0];return}}
@@ -1041,7 +1044,7 @@ function pickVoice(){
 }
 if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
 function say(t,cb,o={}){
-  t=tx(t);
+  if(!o.en)t=tx(t);
   const tok=++sayTok, my=sceneTok; let done=false;
   const fin=()=>{if(done)return;done=true;if(tok===sayTok)talking=false;if(MUS&&AC)MUS.gain.setTargetAtTime(S.vol.mus*.22,AC.currentTime,.2);if(cb&&my===sceneTok)cb()};
   const est=900+t.length*85/(o.rate||1);
@@ -1051,7 +1054,7 @@ function say(t,cb,o={}){
   if(MUS&&AC)MUS.gain.setTargetAtTime(S.vol.mus*.07,AC.currentTime,.1);
   talking=true;
   setTimeout(()=>{ if(tok!==sayTok)return;
-    const u=new SpeechSynthesisUtterance(t); if(VOICE){u.voice=VOICE;u.lang=VOICE.lang}else u.lang=S.variant==='es'?'es-ES':'es-AR';
+    const u=new SpeechSynthesisUtterance(t),vv=o.en?VOICE_EN:VOICE; if(vv){u.voice=vv;u.lang=vv.lang}else u.lang=o.en?(S.variant==='es'?'en-GB':'en-US'):S.variant==='es'?'es-ES':'es-AR';
     u.rate=o.rate||.9; u.pitch=o.pitch||1.1; u.volume=S.vol.voz; u.onend=fin; u.onerror=fin;
     speechSynthesis.speak(u);
   },60);
@@ -3553,10 +3556,125 @@ makeGame=function(g,t,onDone){
   if(g.t==='cancion')return Song(Object.assign({bg:t.bg,key:'cancion'},SONGS[g.song]()),onDone);
   return _makeGame0(g,t,onDone);
 };
+/* ================= EL RINCÓN DEL INGLÉS ================= */
+// Las palabras en inglés las dice una voz en inglés (say con {en:1}); las explicaciones, Tito en castellano.
+// sayMix(['Tocá','@red'],cb): las partes con @ van en inglés.
+function sayMix(parts,cb){const P=parts.filter(Boolean);const step=i=>{if(i>=P.length){cb&&cb();return}const p=P[i],en=p[0]==='@';say(en?p.slice(1):p,()=>step(i+1),en?{en:1,rate:.8}:{})};step(0)}
+const ENC={red:'#FF5A5A',blue:'#5B8DEF',yellow:'#FFD66B',green:'#7CC86E',orange:'#FFA94D',pink:'#F58BB4',purple:'#9B8AD9',brown:'#A86B43',black:'#3B3330',white:'#FFFFFF'};
+function enBlob(c){return (x,y,s)=>{ctx.save();ctx.translate(x,y);const r=s*.34;ctx.beginPath();for(let i=0;i<=24;i++){const a=i/24*PI*2,q=r*(1+.12*Math.sin(a*5));ctx.lineTo(Math.cos(a)*q,Math.sin(a)*q)}ctx.closePath();fillStroke(c,Math.max(4,s*.03));
+  for(const [a,b,q] of[[.95,-.6,.12],[-.9,.7,.09],[.7,.85,.07]])circ(a*r,b*r,q*s,c,Math.max(3,s*.02));ctx.restore()}}
+function enNum(n){return (x,y,s)=>{ctx.save();ctx.translate(x,y);circ(0,-s*.06,s*.3,DIAC[(n-1)%7],Math.max(4,s*.03));text(String(n),0,s*.06,s*.34,'#fff',{f:LF,st:Math.max(4,s*.03),sc:K});
+  const per=5,rows=Math.ceil(n/per);for(let i=0;i<n;i++){const r=Math.floor(i/per),c=i%per,inRow=Math.min(per,n-r*per);circ((c-(inRow-1)/2)*s*.12,s*.33+r*s*.1,s*.04,'#FFC93C',Math.max(2,s*.012))}ctx.restore()}}
+const enFace=m=>(x,y,s)=>drawFace(x,y,s*.36,m);
+// a: edad desde la que aparece la palabra
+const EN={
+  hello:[{en:'Hello',es:'Hola',k:'mano',a:3},{en:'Happy',es:'Contento',draw:enFace('alegria'),a:3},{en:'Sad',es:'Triste',draw:enFace('tristeza'),a:3},{en:'Good night',es:'Buenas noches',k:'luna',a:3},
+    {en:'Good morning',es:'Buenos días',k:'sol',a:4},{en:'Thank you',es:'Gracias',k:'regalo',a:4},{en:'I love you',es:'Te quiero',k:'corazon',a:5},{en:'Angry',es:['Enojado','Enfadado'],draw:enFace('enojo'),a:5}],
+  colors:[['red','Rojo',3],['blue','Azul',3],['yellow','Amarillo',3],['green','Verde',3],['orange','Naranja',4],['pink','Rosa',4],['purple',['Violeta','Morado'],4],['brown','Marrón',5],['black','Negro',5],['white','Blanco',5]].map(([en,es,a])=>({en:en[0].toUpperCase()+en.slice(1),es,a,col:ENC[en],draw:enBlob(ENC[en])})),
+  numbers:['One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten'].map((en,i)=>({en,es:cap(NUM[i+1]),n:i+1,a:i<5?3:i<8?4:5,draw:enNum(i+1)})),
+  animals:[['Dog','Perro','perro',3],['Cat','Gato','gato',3],['Cow','Vaca','vaca',3],['Duck','Pato','pato',3],['Fish','Pez','pez',4],['Horse','Caballo','caballo',4],['Pig',['Chancho','Cerdo'],'cerdo',4],['Sheep','Oveja','oveja',4],
+    ['Lion','León','leon',5],['Elephant','Elefante','elefante',5],['Monkey','Mono','mono',5],['Frog','Rana','rana',5]].map(([en,es,k,a])=>({en,es,k,a}))
+};
+const enItems=set=>EN[set].filter(i=>i.a<=Math.max(3,AGE()));
+const enEs=it=>V(it.es);
+function enDraw(it,x,y,s){if(it.draw)it.draw(x,y,s);else pic(it.k,x,y,s)}
+function enCard(it,x,y,s,o={}){const hs=o.s||1,sh=o.shake?Math.sin((T-o.shake)*40)*10*Math.max(0,1-(T-o.shake)*2.5):0;ctx.save();ctx.translate(x+sh,y);ctx.scale(hs,hs);
+  if(o.glow){ctx.globalAlpha=.5;circ(0,0,s*.62,'#FFE08A',0);ctx.globalAlpha=1}card(-s/2,-s/2,s,s,o.bg||'#fff',7,36);enDraw(it,0,o.label?-s*.07:0,s*(o.label?.66:.8));
+  if(o.label){ctx.font=`600 ${Math.round(s*.13)}px ${DF}`;text(it.en,0,s*.42,Math.min(s*.13,s*.85/Math.max(1,ctx.measureText(it.en).width/(s*.13))),K,{w:600})}
+  if(o.star)star(s/2-18,-s/2+18,22,'#FFC93C',3.5);ctx.restore()}
+function enGrid(items,top=180,h=660,w=1220,cx=900){const n=items.length,cols=n<=3?n:n===4?4:n<=6?3:n<=8?4:5,rows=Math.ceil(n/cols),s=Math.min(w/cols-34,h/rows-34,290);
+  items.forEach((it,i)=>{const r=Math.floor(i/cols),c=i%cols,inRow=Math.min(cols,n-r*cols);it.x=cx-(inRow-1)*(s+34)/2+c*(s+34);it.y=top+((h-rows*(s+34))/2)+(s+34)/2+r*(s+34);it.s=s;it.in=T+i*.08})}
+
+// 1) Escuchá y repetí: tocar cada dibujo para oír la palabra en inglés
+function EnConocer(cfg,onDone){const items=cfg.items.map(o=>Object.assign({},o));enGrid(items);const n=items.length;
+  return {total:n,done:0,open:null,
+    enter(){later(300,()=>say(cfg.intro||'Tocá cada dibujo y escuchá cómo se dice en inglés. ¡Repetilo en voz alta!'))},
+    prompt(){say(this.open?'Tocá para cerrar.':'Tocá un dibujo que todavía no tenga estrella.')},
+    hint(){if(this.open)return this.spoke?{x:900,y:450,r:200}:null;const it=items.find(i=>!i.seen);return it?{x:it.x,y:it.y,r:it.s*.6}:null},
+    show(it){this.open=it;this.ot=T;this.spoke=0;SFX.pop();later(200,()=>sayMix(['@'+it.en,enEs(it)+'.','@'+it.en],()=>{this.spoke=T}));if(!it.seen){it.seen=T;this.done++;scene.starPop=T}},
+    close(){this.open=null;SFX.tap();if(this.done>=n&&!this.fin){this.fin=true;later(400,onDone)}},
+    update(){if(this.open&&this.spoke&&T-this.spoke>2.2)this.close()},
+    draw(){cfg.bg();for(const it of items){const ap=clamp((T-it.in)*3,0,1);enCard(it,it.x,it.y,it.s,{s:(ap<1?back(ap):1)*(this.open?1:hv(it,hR(it.x,it.y,it.s,it.s))),star:it.seen,bg:it.col==='#FFFFFF'?'#E9F3FA':null})}
+      if(this.open){const it=this.open,k=clamp((T-this.ot)*4,0,1);ctx.fillStyle=`rgba(46,36,32,${.45*k})`;ctx.fillRect(0,0,W,H);ctx.save();ctx.translate(900,430);ctx.scale(back(k),back(k));
+        card(-280,-290,560,580,it.col==='#FFFFFF'?'#E9F3FA':'#FFF6E6',8,50);enDraw(it,0,-60,330);text(it.en.toUpperCase(),0,190,it.en.length>9?60:76,'#5B8DEF',{f:LF});text(enEs(it),0,252,40,'#7A6252');ctx.restore()}},
+    down(x,y){if(this.open){if(this.spoke||T-this.ot>4)this.close();return}const it=items.find(i=>inR(x,y,i.x,i.y,i.s,i.s));if(it)this.show(it);else{SFX.tap();sparkles(x,y,3)}}}}
+
+// 2) ¿Dónde está? Tito dice la palabra en inglés y hay que tocar el dibujo
+function EnEscucha(cfg,onDone){const pool=cfg.items,R=cfg.rounds||Math.min(nRounds(),pool.length+1);let order=shuffle(pool.slice());
+  return {total:R,done:0,i:0,
+    enter(){this.round()},
+    round(){const t=order[this.i%order.length],n=clamp(nOpts()+1,3,Math.min(4,pool.length)),others=shuffle(pool.filter(w=>w!==t)).slice(0,n-1);
+      this.t=t;this.items=shuffle([t,...others]).map(o=>({it:o,ok:o===t}));enGrid(this.items,240,560,1200);this.errs=0;this.busy=false;this.lock=true;
+      later(400,()=>this.prompt(()=>{this.lock=false}));later(2800,()=>{this.lock=false})},
+    prompt(cb){sayMix(['Tocá','@'+this.t.en],cb)},
+    hint(){const c=this.items.find(c=>c.ok&&!c.win);return c&&!this.lock?{x:c.x,y:c.y,r:c.s*.6}:null},
+    draw(){cfg.bg();{const s=hv('en:spk',hR(800,160,300,84));ctx.save();ctx.translate(800,160);ctx.scale(s,s);card(-150,-42,300,84,'#fff',6,42);speaker(-60,0,64);pic('oreja',60,0,64);ctx.restore()}
+      for(const c of this.items){if(c.gone&&T-c.gone>.4)continue;ctx.save();if(c.gone)ctx.globalAlpha=Math.max(0,1-(T-c.gone)*2.5);enCard(c.it,c.x,c.y,c.s,{s:c.win?1+.1*Math.sin((T-c.win)*12):hv(c,hR(c.x,c.y,c.s,c.s)),shake:c.shake,glow:!!c.win,bg:c.it.col==='#FFFFFF'?'#E9F3FA':null,label:!!c.win});ctx.restore()}},
+    down(x,y){if(inR(x,y,800,160,300,84)){this.prompt();return}
+      const c=this.items.find(c=>!c.gone&&inR(x,y,c.x,c.y,c.s,c.s));if(!c){SFX.tap();sparkles(x,y,3);return}if(c.win||this.busy)return;
+      if(this.lock&&!c.ok){sayMix(['@'+c.it.en]);return}
+      if(c.ok){this.busy=true;c.win=T;SFX.good();burst(c.x,c.y,30);rec(cfg.key||'ingles',this.errs===0);onRight(this.errs===0);this.done++;scene.starPop=T;
+        sayMix(['@'+c.it.en+'!',praise()],()=>later(400,()=>{this.i++;if(this.i>=R)onDone();else this.round()}))}
+      else{SFX.bad();c.shake=T;if(this.errs===0)rec(cfg.key||'ingles',false);this.errs++;sayMix(['Ese es','@'+c.it.en,'. Buscá','@'+this.t.en]);
+        if(this.errs===2){onWrongTwice();c.gone=T}}}}}
+
+// 3) Los globos: reventar los globos de la palabra que dice Tito
+function EnGlobos(cfg,onDone){const pool=cfg.items,R=AGE()<=3?3:4,sp=AGE()<=3?70:AGE()===4?85:100;
+  return {total:R,done:0,bs:[],nx:0,
+    enter(){this.pickT();later(400,()=>this.prompt())},
+    pickT(){const prev=this.t;const L=pool.filter(p=>p!==prev);this.t=pick(L.length?L:pool);this.tn=0},
+    prompt(){sayMix(['Reventá los globos de','@'+this.t.en])},
+    spawn(){const lanes=[340,560,780,1000,1220,1440].filter(x=>!this.bs.some(b=>Math.abs(b.x-x)<60&&b.y>620));if(!lanes.length)return;
+      const isT=this.tn<=0||Math.random()<.45,it=isT?this.t:pick(pool.filter(p=>p!==this.t))||this.t;if(it===this.t)this.tn=2;else this.tn--;
+      this.bs.push({x:pick(lanes),y:980,it,ph:rnd(0,6),c:it.col||pick(['#FF8A7A','#7FD3F0','#FFD66B','#B9A6F0','#9FDC8F','#F58BB4'])})},
+    update(dt){if(this.fin)return;this.nx-=dt;if(this.nx<=0){this.spawn();this.nx=1.15}
+      for(const b of this.bs){if(!b.pop)b.y-=sp*dt;b.x+=Math.sin(T*1.5+b.ph)*.4}this.bs=this.bs.filter(b=>b.y>-140&&!(b.pop&&T-b.pop>.5))},
+    hint(){const b=this.bs.filter(b=>!b.pop&&b.it===this.t&&b.y<820&&b.y>120).sort((a,c)=>a.y-c.y)[0];return b?{x:b.x,y:b.y,r:80}:null},
+    draw(){cfg.bg();{const s=hv('en:spk',hR(800,160,300,84));ctx.save();ctx.translate(800,160);ctx.scale(s,s);card(-150,-42,300,84,'#fff',6,42);speaker(-60,0,64);enDraw(this.t,60,0,66);ctx.restore()}
+      for(const b of this.bs){ctx.save();ctx.translate(b.x,b.y);if(b.pop){const k=(T-b.pop)*2;ctx.globalAlpha=Math.max(0,1-k);ctx.scale(1+k,1+k)}
+        ctx.beginPath();ctx.moveTo(0,78);ctx.quadraticCurveTo(12,110,-6,150);ctx.lineWidth=3;ctx.strokeStyle=K;ctx.stroke();ell(0,0,74,86,b.c,6);ctx.beginPath();ctx.moveTo(-10,84);ctx.lineTo(10,84);ctx.lineTo(0,72);ctx.closePath();fillStroke(b.c,4);
+        ell(-28,-36,12,20,'rgba(255,255,255,.6)',0);if(!b.it.col){circ(0,4,50,'#fff',4);enDraw(b.it,0,4,82)}ctx.restore()}},
+    down(x,y){if(this.fin)return;if(inR(x,y,800,160,300,84)){this.prompt();return}
+      const b=this.bs.filter(b=>!b.pop&&dist(x,y,b.x,b.y)<90).sort((a,c)=>dist(x,y,a.x,a.y)-dist(x,y,c.x,c.y))[0];if(!b){SFX.tap();sparkles(x,y,3);return}
+      if(b.it===this.t){b.pop=T;SFX.pop();SFX.good();burst(b.x,b.y,24);rec(cfg.key||'ingles',true);onRight(true);this.done++;scene.starPop=T;
+        if(this.done>=R){this.fin=true;sayMix(['@'+b.it.en+'!',praise()],()=>later(300,onDone))}else{this.pickT();sayMix(['@'+b.it.en+'!','Ahora, los globos de','@'+this.t.en])}}
+      else{SFX.boing();b.ph+=3;rec(cfg.key||'ingles',false);sayMix(['Ese es','@'+b.it.en])}}}}
+
+// 4) Contar en inglés: tocar cada cosa y Tito cuenta
+function EnCuenta(cfg,onDone){const max=AGE()<=3?5:AGE()===4?8:10,R=3,ks=['manzana','estrella','pelota','pato','flor','globo'];
+  return {total:R,done:0,i:0,
+    enter(){this.round()},
+    round(){const prev=this.n;let n;do{n=Math.floor(rnd(2,max+1))}while(n===prev);this.n=n;this.c=0;this.k=ks[this.i%ks.length];this.busy=false;
+      const per=n<=5?n:Math.ceil(n/2),s=Math.min(200,1100/per-30);this.os=Array.from({length:n},(_,j)=>{const r=j<per?0:1,c=r?j-per:j,inRow=r?n-per:per;return{x:900-(inRow-1)*(s+30)/2+c*(s+30),y:(n<=5?470:360)+r*(s+60),s,on:0}});
+      later(400,()=>say(this.i===0?'¡Contamos en inglés! Tocá cada dibujo, de a uno.':'Otra vez: tocá cada dibujo y contamos.'))},
+    prompt(){say('Tocá cada dibujo y contamos en inglés.')},
+    hint(){const o=this.os.find(o=>!o.on);return o&&!this.busy?{x:o.x,y:o.y,r:o.s*.6}:null},
+    draw(){cfg.bg();for(const o of this.os){const b=o.on?Math.max(0,1-(T-o.on)*3)*.25:0;ctx.save();ctx.translate(o.x,o.y);ctx.scale(1+b,1+b);card(-o.s/2,-o.s/2,o.s,o.s,o.on?'#FFF3B0':'#fff',6,30);pic(this.k,0,0,o.s*.78);
+        if(o.on){circ(o.s/2-8,-o.s/2+8,26,'#5B8DEF',4);text(String(o.num),o.s/2-8,-o.s/2+20,30,'#fff',{f:LF})}ctx.restore()}
+      if(this.busy&&this.c===this.n){card(700,110,400,120,'#fff',7,60);text(String(this.n),760,196,80,'#5B8DEF',{f:LF});text(EN.numbers[this.n-1].en,950,190,56,K,{w:600})}},
+    down(x,y){if(this.busy)return;const o=this.os.find(o=>!o.on&&inR(x,y,o.x,o.y,o.s,o.s));if(!o){const d=this.os.find(o=>o.on&&inR(x,y,o.x,o.y,o.s,o.s));if(d)sayMix(['@'+EN.numbers[d.num-1].en]);else{SFX.tap();sparkles(x,y,3)}return}
+      this.c++;o.on=T;o.num=this.c;SFX.count(this.c);sparkles(o.x,o.y,6);sayMix(['@'+EN.numbers[this.c-1].en]);
+      if(this.c===this.n){this.busy=true;rec(cfg.key||'ingles-numeros',true);onRight(true);this.done++;scene.starPop=T;burst(900,300,40);
+        later(900,()=>sayMix(['@'+EN.numbers[this.n-1].en+'!',cap(NUM[this.n])+'. ¡Hay '+NUM[this.n]+'!'],()=>later(500,()=>{this.i++;if(this.i>=R)onDone();else this.round()})))}}}}
+
+const ENG={conocer:{t:'enConocer',icon:'oreja',name:'Escuchá y repetí'},escucha:{t:'enEscucha',icon:'busca',name:'¿Dónde está?'},globos:{t:'enGlobos',icon:'globo',name:'Reventá los globos'},cuenta:{t:'enCuenta',icon:'manzana',name:'Contar en inglés'}};
+const ING=[
+  {id:'EN-HELLO',n:'Los saludos en inglés',icon:'mano',c:'#5BB8E6',bg:BG.aula,zone:'ingles',en:'hello',tip:'saludarse en inglés al llegar y al irse: hello, good morning, good night.',games:[ENG.conocer,ENG.escucha,ENG.globos]},
+  {id:'EN-COLORS',n:'Los colores en inglés',icon:'pinturas',c:'#FF5A5A',bg:BG.colores,zone:'ingles',en:'colors',tip:'jugar a "I spy": buscar en casa cosas red, blue, yellow...',games:[ENG.conocer,ENG.escucha,ENG.globos]},
+  {id:'EN-NUMBERS',n:'Los números en inglés',icon:'bloques',c:'#7CC86E',bg:BG.aula,zone:'ingles',en:'numbers',tip:'contar en inglés los escalones o los juguetes: one, two, three...',games:[ENG.conocer,ENG.cuenta,ENG.escucha]},
+  {id:'EN-ANIMALS',n:'Los animales en inglés',icon:'perro',c:'#FFA94D',bg:BG.granja,zone:'ingles',en:'animals',tip:'mirar un libro de animales y nombrarlos en inglés.',games:[ENG.conocer,ENG.escucha,ENG.globos]}
+];
+{const mg0=makeGame;makeGame=function(g,t,onDone){
+  if(t.en&&g.t.startsWith('en')){const items=enItems(t.en),bg=t.bg;
+    if(g.t==='enConocer')return EnConocer({items,bg},onDone);
+    if(g.t==='enEscucha')return EnEscucha({items,bg,key:'ingles-'+t.en},onDone);
+    if(g.t==='enGlobos')return EnGlobos({items,bg,key:'ingles-'+t.en},onDone);
+    if(g.t==='enCuenta')return EnCuenta({bg},onDone)}
+  return mg0(g,t,onDone)}}
 /* ================= ESCENAS ================= */
 const SCENES={};
 [...T3,C3].forEach(t=>t.zone='jardin');[...T4,C4].forEach(t=>t.zone='bosque');[...T5,C5].forEach(t=>t.zone='montana');
-const TEMAS=[...T3,C3,...T4,C4,...T5,C5,CAN,RUT,TRZ,...FIESTAS], TEMA={};TEMAS.forEach(t=>TEMA[t.id]=t);
+const TEMAS=[...T3,C3,...T4,C4,...T5,C5,CAN,RUT,TRZ,...FIESTAS,...ING], TEMA={};TEMAS.forEach(t=>TEMA[t.id]=t);
 const tst=id=>S.temas[id]||{g:{},done:0};
 const gDone=t=>t.games.filter((g,j)=>tst(t.id).g[j]).length;
 const LOGO='Curiolandia', LOGOC=['#FF8A7A','#FFA94D','#FFC93C','#7CC86E','#3FC1B0','#7FD3F0','#5B8DEF','#9B8AD9','#F58BB4','#FF8A7A','#FFA94D'];
@@ -3965,7 +4083,9 @@ const ZONES={
   jardin:{temas:[...T3,C3],name:'el Jardín de los 3 años',hello:'¡Bienvenido al Jardín de los 3 años! Seguí el camino: las casitas se abren de a una. ',bg:()=>sky('#E9F7FC','#F4FBEA'),bands:['#FFE2B8','#D6EEFA','#DDF3D2'],cbox:'#EDE7FF'},
   bosque:{temas:[...T4,C4],name:'el Bosque de los 4 años',hello:'¡Bienvenido al Bosque de los 4 años! Seguí el camino: las casitas se abren de a una. ',bg:()=>{sky('#D8F0CC','#F1FAE8');for(let i=0;i<12;i++){ctx.globalAlpha=.35;tree(120+i*130,880,.9+(i%3)*.15,i%2?'verano':'primavera');ctx.globalAlpha=1}},bands:['#F7DDB8','#D9ECF7','#CDEBC0'],cbox:'#E4DDF8'},
   montana:{temas:[...T5,C5],name:'la Montaña de los 5 años',hello:'¡Bienvenido a la Montaña de los 5 años! Seguí el camino: las casitas se abren de a una. ',bg:()=>{sky('#E2EAF8','#F6F2EA');ctx.globalAlpha=.4;for(let i=0;i<6;i++){ctx.beginPath();ctx.moveTo(i*300-60,900);ctx.lineTo(i*300+120,560+(i%2)*80);ctx.lineTo(i*300+300,900);ctx.closePath();fillStroke('#B9C3D6',0)}ctx.globalAlpha=1},bands:['#F9E0C4','#DCE7F7','#DDEFD5'],cbox:'#E8E1FA'},
-  fiestas:{temas:FIESTAS,name:'los días especiales',hello:'¡Los días especiales! Se abren de a una, como un camino. ',bg:()=>BG.fiesta()}
+  fiestas:{temas:FIESTAS,name:'los días especiales',hello:'¡Los días especiales! Se abren de a una, como un camino. ',bg:()=>BG.fiesta()},
+  ingles:{temas:ING,name:'el Rincón del inglés',hello:'¡Bienvenido al Rincón del inglés! Acá aprendemos palabras en inglés, como los nenes de Inglaterra. Las casitas se abren de a una. ',
+    bg:()=>{sky('#E3F0FF','#FFF4E6');for(let i=0;i<7;i++){const x=300+i*150,y=110+(i%2)*40;ctx.globalAlpha=.5;card(x-44,y-28,88,56,'#fff',4,24);text(['Hi!','ABC','1 2 3','Yes!','Wow!'][i%5],x,y+12,26,DIAC[i%7],{f:LF});ctx.globalAlpha=1}}}
 };
 const MAINZ=['jardin','bosque','montana'];
 const zoneOf=t=>t.zone||'jardin';
@@ -3977,12 +4097,12 @@ function zoneOpen(z){if(z==='jardin'||!ZAGE[z])return true;if(S.unlockAll||ZAGE[
 
 /* ---------- el orden: qué está abierto ---------- */
 // cuántas casitas del camino hay que terminar para abrir cada cosa
-const NEED={'X-CAN':1,'X-RUT':2,'X-TRZ':3,fiestas:4,concepts:3};
+const NEED={'X-CAN':1,'X-RUT':2,'X-TRZ':3,fiestas:4,ingles:2,concepts:3};
 const fiestaNow=()=>{const m=new Date().getMonth();return m===11||m===0?'F-navidad':m===1||m===2?'F-carnaval':m===3?'F-libro':null};
 const started=t=>{const s=tst(t.id);return !!s.done||Object.keys(s.g).length>0};
 function temaOpen(t){if(!t)return false;if(S.unlockAll||started(t))return true;const z=t.zone;
   if(MAINZ.includes(z)){if(!zoneOpen(z))return false;if(t.concepts)return pathDone(z)>=NEED.concepts;const L=pathOf(z),i=L.indexOf(t);return i<=0||!!tst(L[i-1].id).done}
-  if(z==='fiestas'){if(mainDone()<NEED.fiestas)return false;const i=FIESTAS.indexOf(t);return i<=0||!!tst(FIESTAS[i-1].id).done||fiestaNow()===t.id}
+  if(z==='fiestas'||z==='ingles'){if(mainDone()<NEED[z])return false;const L=ZONES[z].temas,i=L.indexOf(t);return i<=0||!!tst(L[i-1].id).done||fiestaNow()===t.id}
   if(NEED[t.id]!=null)return mainDone()>=NEED[t.id];
   return true}
 // un juego se abre cuando terminaste el anterior (los ya jugados se pueden repetir)
@@ -3993,13 +4113,14 @@ function curTema(z){if(z==='fiestas')return FIESTAS.find(t=>!tst(t.id).done&&tem
   const t=pathOf(z).find(t=>!tst(t.id).done&&temaOpen(t));if(t)return t;const c=ZONES[z].temas.find(t=>t.concepts);return c&&!tst(c.id).done&&temaOpen(c)?c:null}
 function nextTema(){const z0=ageZoneOpen();
   for(const z of[z0,...MAINZ.filter(z=>z!==z0)]){if(!zoneOpen(z))continue;const t=pathOf(z).find(t=>!tst(t.id).done&&temaOpen(t));if(t)return t}
-  for(const t of[CAN,RUT,TRZ,...MAINZ.map(z=>ZONES[z].temas.find(t=>t.concepts)),...FIESTAS])if(t&&!tst(t.id).done&&temaOpen(t))return t;
+  for(const t of[CAN,RUT,...ING,TRZ,...MAINZ.map(z=>ZONES[z].temas.find(t=>t.concepts)),...FIESTAS])if(t&&!tst(t.id).done&&temaOpen(t))return t;
   return null}
 suggestTema=function(z){return curTema(z||ageZoneOpen())};
 const lowName=t=>t.concepts?'el Rincón de los Conceptos':V(t.n).replace(/^./,c=>c.toLowerCase());
 function lockMsg(t){const z=t.zone;
   if(t.concepts)return 'El Rincón de los Conceptos se abre cuando termines tres casitas del camino. ¡Ya terminaste '+(NUM[pathDone(z)]||pathDone(z))+'!';
   if(z==='fiestas'&&mainDone()<NEED.fiestas)return 'Los días especiales se abren cuando termines cuatro casitas del camino.';
+  if(z==='ingles'&&mainDone()<NEED.ingles)return 'El Rincón del inglés se abre cuando termines dos casitas del camino.';
   const L=z==='fiestas'?FIESTAS:pathOf(z),prev=L[L.indexOf(t)-1];
   return 'Esta casita todavía está cerrada. Primero terminá '+(prev?lowName(prev):'la anterior')+'. ¡Seguí el camino!'}
 
@@ -4018,7 +4139,7 @@ function arrowAt(x,y){const b=Math.abs(Math.sin(T*4))*16;ctx.save();ctx.translat
 
 // posiciones de las casitas de una zona: un camino en zigzag (izquierda→derecha, derecha→izquierda...)
 function zonePos(z){const P={},L=ZONES[z].temas;
-  if(z==='fiestas'){L.forEach((t,i)=>P[t.id]={x:900-(L.length-1)*170+i*340,y:500,s:1.25});return P}
+  if(!MAINZ.includes(z)){L.forEach((t,i)=>P[t.id]={x:900-(L.length-1)*170+i*340,y:500,s:1.25});return P}
   const path=pathOf(z),rows=[[0,1,2,3,4],[5,6,7,8],[9,10,11]],ys=[250,490,725];
   rows.forEach((r,ri)=>r.forEach((n,j)=>{const t=path[n];if(t)P[t.id]={x:ri===0?440+j*256:ri===1?1290-j*280:450+j*280,y:ys[ri],band:ri,s:1}}));
   const c=L.find(t=>t.concepts);if(c)P[c.id]={x:1420,y:690,band:3,s:1};return P}
@@ -4107,14 +4228,15 @@ const MZ2=[
   {id:'trazos',x:530,y:255,r:85,name:'los trazos',t:'X-TRZ'},
   {id:'rutinas',x:770,y:240,r:85,name:'las rutinas y los hábitos',t:'X-RUT'},
   {id:'album',x:1450,y:270,r:80,name:'el álbum'},
+  {id:'ingles',x:1290,y:458,r:74,name:'el Rincón del inglés'},
   {id:'fiestas',x:575,y:785,r:90,name:'los días especiales'},
   {id:'tienda',x:790,y:800,r:90,name:'la tienda'},
   {id:'casaTito',x:1040,y:715,r:150,name:'la casa de Tito'}
 ];
 const SEGUIR={x:340,y:812,r:64};
 const mzOf=id=>MZ2.find(z=>z.id===id);
-function spotOpen(id){if(S.unlockAll)return true;if(id==='canciones')return temaOpen(CAN);if(id==='rutinas')return temaOpen(RUT);if(id==='trazos')return temaOpen(TRZ);if(id==='fiestas')return mainDone()>=NEED.fiestas;if(ZAGE[id])return zoneOpen(id);return true}
-const spotNeed=id=>({canciones:NEED['X-CAN'],rutinas:NEED['X-RUT'],trazos:NEED['X-TRZ'],fiestas:NEED.fiestas})[id];
+function spotOpen(id){if(S.unlockAll)return true;if(id==='canciones')return temaOpen(CAN);if(id==='rutinas')return temaOpen(RUT);if(id==='trazos')return temaOpen(TRZ);if(id==='fiestas')return mainDone()>=NEED.fiestas;if(id==='ingles')return mainDone()>=NEED.ingles;if(ZAGE[id])return zoneOpen(id);return true}
+const spotNeed=id=>({canciones:NEED['X-CAN'],rutinas:NEED['X-RUT'],trazos:NEED['X-TRZ'],fiestas:NEED.fiestas,ingles:NEED.ingles})[id];
 function goSeguir(){if(!asamHoy()){go('asamblea');return}const t=nextTema();if(!t){say('¡Terminaste todos los caminos'+kid()+'! Podés repetir lo que más te guste.');return}go('casita',{t:t.id,hello:true})}
 function drawSeguir(){const p=(Math.sin(T*4)+1)/2,s=hv('seguir',hC(SEGUIR.x,SEGUIR.y,SEGUIR.r+8));ctx.save();ctx.translate(SEGUIR.x,SEGUIR.y);ctx.scale(s*(1+p*.05),s*(1+p*.05));
   ctx.globalAlpha=.35+.3*p;circ(0,0,SEGUIR.r+12,null,10,'#FFC93C');ctx.globalAlpha=1;circ(0,0,SEGUIR.r,'#7CC86E',7);ctx.beginPath();ctx.moveTo(-18,-28);ctx.lineTo(30,0);ctx.lineTo(-18,28);ctx.closePath();fillStroke('#fff',5);ctx.restore()}
@@ -4137,6 +4259,8 @@ function drawZoneSpot(z,o={}){const {x,y}=z,open=zoneOpen(z.id),s=hv('mz'+z.id,h
   if(z.id==='rutinas'){card(x-62,y-26,124,90,'#BFEAF7',6,10);ctx.beginPath();ctx.moveTo(x-80,y-24);ctx.lineTo(x,y-90);ctx.lineTo(x+80,y-24);ctx.closePath();fillStroke('#5BB8E6',6);circ(x,y+18,34,'#fff',5);pic('manos',x,y+18,58);for(let i=0;i<3;i++){const k=(T*.6+i/3)%1;ctx.globalAlpha=1-k;circ(x+60+Math.sin(T*3+i)*8,y-30-k*60,6+i*2,'rgba(255,255,255,.8)',2,'#9ED9F5')}ctx.globalAlpha=1}
   if(z.id==='album'){ctx.save();ctx.translate(x,y);ctx.rotate(-.08);card(-60,-50,120,100,'#9B8AD9',6,14);card(-48,-40,96,80,'#FFF6E6',4,10);star(0,0,26,'#FFC93C',4);ctx.restore()}
   if(z.id==='fiestas'){pic('fuegos',x,y-44,130);pic('tarta',x-38,y+26,110);pic('regalo',x+46,y+34,90)}
+  if(z.id==='ingles'){ctx.save();ctx.translate(x,y);const b=Math.sin(T*2)*3;card(-70,-58+b,140,84,'#fff',6,30);ctx.beginPath();ctx.moveTo(-24,24+b);ctx.lineTo(-40,52+b);ctx.lineTo(0,24+b);ctx.closePath();fillStroke('#fff',6);card(-26,18+b,40,10,'#fff',0,0);
+    text('Hello!',0,-4+b,36,'#5B8DEF',{f:LF});card(-54,40,108,40,'#FF6B5E',5,20);text('ABC',0,70,26,'#fff',{f:LF});ctx.restore()}
   if(z.id==='tienda'){pic('tienda',x,y,180);if(S.coins>0){pic('moneda',x+62,y-60,50+Math.sin(T*4)*4)}}
   if(z.id==='casaTito'){drawTitoHouse(HOUSE_AT[0],HOUSE_AT[1],houseLevel(),{shake:o.shake});drawPet(HOUSE_AT[0]+170,HOUSE_AT[1]+40,96,{jump:o.petJump})}
   const lk=!spotOpen(z.id)&&!ZAGE[z.id];
@@ -4147,7 +4271,7 @@ SCENES.map=Object.assign(SCENES.map,{
     let msg=null,fx=null;
     for(const z of['bosque','montana'])if(zoneOpen(z)&&!S.woke[z]){S.woke[z]=1;save();if(ZAGE[z]>AGE()&&!S.unlockAll){this.wake={z,t:T+1};msg='¡Mirá'+kid()+'! ¡Se despertó '+mzOf(z).name+'! Ahora podés jugar ahí también.';break}}
     const nw=newlyOpen('map',MZ2.filter(z=>spotNeed(z.id)&&spotOpen(z.id)).map(z=>z.id));
-    if(!msg&&nw.length){const z=mzOf(nw[0]);this.unl={id:z.id,t:T+1};msg='¡Mirá'+kid()+'! ¡Se abrieron '+z.name+'! Tocá para jugar.';fx=()=>{SFX.sparkle();burst(z.x,z.y,50)}}
+    if(!msg&&nw.length){const z=mzOf(nw[0]);this.unl={id:z.id,t:T+1};msg='¡Mirá'+kid()+'! ¡Se '+(/^l[ao]s /.test(z.name)?'abrieron ':'abrió ')+z.name+'! Tocá para jugar.';fx=()=>{SFX.sparkle();burst(z.x,z.y,50)}}
     const hl=houseLevel();if(S.houseSeen==null)S.houseSeen=hl;
     if(!msg&&hl>S.houseSeen){S.houseSeen=hl;save();msg=HOUSE_SAY[hl];fx=()=>{this.shake=T;SFX.tada();burst(HOUSE_AT[0],HOUSE_AT[1]-150,80)}}
     const ps=petStage();
@@ -4468,8 +4592,80 @@ SCENES.casaTito={music:'casita',
   up(x,y){const d=this.drag;if(!d)return;this.drag=null;drag=null;setCursor('pt');save();if(!d.moved){const p=S.home[d.id];homeAction(d.id,p.x,p.y-80)}else SFX.snap()}
 };
 {const d0=SCENES.juego.draw;SCENES.juego.draw=function(){d0.call(this);drawCoinHUD()}}
+/* ================= REPASO INTELIGENTE ================= */
+// Cada habilidad recuerda en qué juegos aparece (S.kg) y cada juego cómo le fue (S.gs).
+// Todos los días Tito arma un repaso de 3 juegos: primero lo que cuesta, después lo que hace más tiempo que no se juega.
+Object.assign(DEF,{kg:{},gs:{},rep:null});
+for(const k of['kg','gs'])if(!S[k]||typeof S[k]!=='object')S[k]={};
+{const r0=rec;rec=function(k,ok){r0(k,ok);if(sceneName==='juego'&&scene.t&&scene.gi!=null){const id=scene.t.id+'#'+scene.gi,m=S.kg[k]||(S.kg[k]=[]);
+  if(m[0]!==id){const i=m.indexOf(id);if(i>=0)m.splice(i,1);m.unshift(id);if(m.length>6)m.pop()}
+  const g=S.gs[id]||(S.gs[id]={ok:0,err:0,d:''});ok?g.ok++:g.err++;save()}}}
+let REP_ON=false;
+{const f0=finishGame;finishGame=function(t,gi){const id=t.id+'#'+gi,g=S.gs[id]||(S.gs[id]={ok:0,err:0,d:''});g.d=today();if(REP_ON&&S.rep&&S.rep.list.includes(id))S.rep.done[id]=1;save();f0(t,gi)}}
+const NOREP=['conocer','enConocer','cuento','cancion','trazo','decora','mifamilia','velas'];
+const repOk=id=>{const [tid,j]=id.split('#'),t=TEMA[tid],g=t&&t.games[+j];return !!(g&&!NOREP.includes(g.t)&&tst(tid).g[j])};
+function repWeak(){const out=[];
+  const sk=Object.keys(S.stats).map(k=>{const s=S.stats[k],n=s.ok+s.err;return{k,n,r:n?s.ok/n:1}}).filter(o=>o.n>=4&&o.r<.7).sort((a,b)=>a.r-b.r);
+  for(const o of sk)for(const id of(S.kg[o.k]||[]))if(repOk(id)&&!out.includes(id)){out.push(id);break}
+  Object.keys(S.gs).map(id=>{const g=S.gs[id],n=g.ok+g.err;return{id,n,r:n?g.ok/n:1}}).filter(o=>o.n>=3&&o.r<.7&&repOk(o.id)).sort((a,b)=>a.r-b.r).forEach(o=>{if(!out.includes(o.id))out.push(o.id)});
+  return out}
+function repOld(){const L=[];for(const t of TEMAS){const g=tst(t.id).g;for(const j in g){const id=t.id+'#'+j;if(repOk(id))L.push({id,d:(S.gs[id]&&S.gs[id].d)||''})}}
+  return L.sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:0).map(o=>o.id)}
+function repBuild(){const w=repWeak().slice(0,3),L=[...w],old=repOld(),tm=id=>id.split('#')[0];
+  for(const id of old)if(L.length<3&&!L.includes(id)&&!L.some(x=>tm(x)===tm(id)))L.push(id);
+  for(const id of old)if(L.length<3&&!L.includes(id))L.push(id);
+  S.rep={d:today(),list:L,done:{},weak:w.length,paid:0,seen:0};save()}
+function repToday(){const R=S.rep;if(!R||R.d!==today()||(!R.weak&&!Object.keys(R.done).length&&repWeak().length)||(!R.list.length&&repOld().length))repBuild();return S.rep}
+const repAllDone=()=>!!(S.rep&&S.rep.d===today()&&S.rep.list.length&&S.rep.list.every(id=>S.rep.done[id]));
+const repDue=()=>STARS()>=6&&!repAllDone()&&repWeak().length>0;
+
+SCENES.repaso={music:'casita',
+  enter(o){const R=repToday();this.L=R.list;this.unl=null;REP_ON=false;if(o.seguir){R.seen=1;save()}
+    if(repAllDone()&&!R.paid){R.paid=1;save();later(500,()=>{SFX.tada();burst(800,350,90);giveSticker('lupa');say('¡Terminaste el repaso de hoy'+kid()+'! Tito te regala cinco monedas.',()=>{giveCoins(5,800,420);later(900,()=>say('Tocá la flecha verde para seguir el camino.'))})});return}
+    const nx=this.next();
+    if(o.back&&nx>=0&&nx!==this.prevNx){this.unl={j:nx,t:T+.8};later(800,()=>{SFX.sparkle();const [x,y]=this.pos(nx);burst(x,y,30)});later(300,()=>say('¡Muy bien! Ahora el número '+(nx+1)+'.'));return}
+    later(300,()=>this.prompt(!o.back))},
+  pos(j){const n=this.L.length;return[860-(n-1)*180+j*360,500]},
+  open(j){return S.unlockAll||j===0||!!S.rep.done[this.L[j-1]]||!!S.rep.done[this.L[j]]},
+  next(){return this.L.findIndex((id,j)=>!S.rep.done[id]&&this.open(j))},
+  prompt(long){const R=S.rep;if(!this.L.length){say('Todavía no hay nada para repasar. ¡Primero jugá algunos juegos del camino!');return}
+    const nx=this.next();if(nx<0){say('¡Ya hiciste el repaso de hoy! Mañana Tito prepara otro. Tocá la flecha verde para seguir el camino.');return}
+    say((long?(R.weak?'¡Hora de repasar! Tito eligió juegos que todavía cuestan un poquito. ¡Practicando salen cada vez mejor! ':'¡Hora de repasar! Tito eligió juegos que jugaste hace tiempo. '):'')+(nx===0?'Empezá por el primero.':'Tocá el número '+(nx+1)+'.'))},
+  hint(){const nx=this.next();if(nx<0)return this.L.length?{x:1300,y:800,r:80}:null;const [x,y]=this.pos(nx);return{x,y,r:140}},
+  dwell(id){const j=+id.slice(2),e=this.L[j];if(!e)return;const [tid,g]=e.split('#'),t=TEMA[tid],gm=t.games[+g];say(V(gm.name||GNAME[gm.t]||t.n)+'. '+V(t.n)+'.')},
+  draw(){sky('#EAF4FF','#FFF6E6');floor(760,'#E6DCC8');
+    card(170,34,600,112,'#fff',6,56);pic('lupa',250,90,90);text('Repaso con Tito',490,112,52,K,{w:600});
+    const pts=this.L.map((id,j)=>this.pos(j)),nx=this.next();if(pts.length>1)drawRoad(pts,nx<0?pts.length-1:nx,150);
+    this.L.forEach((id,j)=>{const [tid,g]=id.split('#'),t=TEMA[tid],[x,y]=pts[j],lk=!this.open(j),dn=!!S.rep.done[id];
+      drawStation(t,+g,x,y,{s:lk?1:hv('r:'+j,hC(x,y,130))});
+      const nm=V(t.n);ctx.font=`600 28px ${DF}`;const fs=Math.min(28,28*230/Math.max(1,ctx.measureText(nm).width)),tw=Math.min(230,ctx.measureText(nm).width);
+      card(x-tw/2-48,y+156,tw+96,58,'#fff',5,29);pic(t.icon,x-tw/2-14,y+185,42);text(nm,x+20,y+185+fs*.36,fs,K,{w:600});
+      const un=this.unl&&this.unl.j===j&&unlockFx(x,y,124,this.unl.t);if(!un&&lk)lockOver(x,y,124);
+      circ(x-96,y-96,30,lk?'#EADFCF':dn?'#7CC86E':'#5B8DEF',5);text(String(j+1),x-96,y-84,34,'#fff',{f:LF});
+      if(dn){circ(x+96,y+96,30,'#7CC86E',5);ctx.beginPath();ctx.moveTo(x+82,y+96);ctx.lineTo(x+93,y+108);ctx.lineTo(x+111,y+84);ctx.lineWidth=7;ctx.strokeStyle='#fff';ctx.lineCap='round';ctx.stroke()}
+      if(j===nx&&!(this.unl&&this.unl.j===j&&T<this.unl.t+.4))arrowAt(x,y-170)});
+    if(nx<0&&this.L.length){const p=(Math.sin(T*4)+1)/2,s=hv('rp:seguir',hC(1300,800,74));ctx.save();ctx.translate(1300,800);ctx.scale(s*(1+p*.05),s*(1+p*.05));ctx.globalAlpha=.35+.3*p;circ(0,0,84,null,10,'#FFC93C');ctx.globalAlpha=1;circ(0,0,72,'#7CC86E',7);ctx.beginPath();ctx.moveTo(-20,-32);ctx.lineTo(34,0);ctx.lineTo(-20,32);ctx.closePath();fillStroke('#fff',5);ctx.restore()}
+    drawHome();drawCoinHUD();drawTito(TITO.x,TITO.y,TITO.w)},
+  down(x,y){if(atHome(x,y)){SFX.tap();go('map');return}if(inTito(x,y)){this.prompt(true);return}if(inCoinHUD(x,y)){SFX.pop();go('tienda');return}
+    const nx=this.next();if(nx<0&&this.L.length&&dist(x,y,1300,800)<80){SFX.pop();goSeguir();return}
+    for(let j=0;j<this.L.length;j++){const [gx,gy]=this.pos(j);if(dist(x,y,gx,gy)<140){
+      if(!this.open(j)){SFX.boing();say('Este todavía está cerrado. Primero terminá el número '+((nx<0?j-1:nx)+1)+'.');return}
+      const [tid,g]=this.L[j].split('#');SFX.pop();this.prevNx=nx;REP_ON=true;go('juego',{t:tid,g:+g});return}}
+    SFX.tap();sparkles(x,y)}
+};
+// al volver de un juego del repaso (o al tocar la casita desde el juego) se vuelve al repaso
+{const e0=SCENES.casita.enter;SCENES.casita.enter=function(o){if(REP_ON&&!o.fin){REP_ON=false;go('repaso',{back:1});return}REP_ON=false;return e0.call(this,o)}}
+// el botón verde pasa una vez por día por el repaso, si hay algo que cuesta
+{const g0=goSeguir;goSeguir=function(){if(asamHoy()&&repDue()&&!(S.rep&&S.rep.d===today()&&S.rep.seen)){go('repaso',{seguir:1});return}g0()}}
+// botón del repaso en el mapa, arriba
+const REPBTN={x:1215,y:66};
+{const M=SCENES.map,d0=M.draw,dn0=M.down,dw0=M.dwell;
+  M.draw=function(){d0.call(this);const s=hv('repaso',hC(REPBTN.x,REPBTN.y,50)),due=repDue();ctx.save();ctx.translate(REPBTN.x,REPBTN.y);ctx.scale(s,s);circ(0,0,46,'#fff',6);pic('lupa',0,0,64);
+    if(due){const p=1+.12*Math.sin(T*5);circ(32,-32,16*p,'#FF6B5E',4);text('!',32,-22,22,'#fff',{f:LF})}else if(repAllDone()){circ(32,-32,16,'#7CC86E',4)}ctx.restore()};
+  M.down=function(x,y){if(dist(x,y,REPBTN.x,REPBTN.y)<52){SFX.pop();go('repaso',{hello:true});return}return dn0.call(this,x,y)};
+  M.dwell=function(id){if(id==='repaso'){say('El repaso con Tito.');return}return dw0&&dw0.call(this,id)}}
 /* ================= ZONA DE ADULTOS ================= */
-const SKILL={busca:'Reconocer palabras (¿Dónde está?)',sonidos:'Sonidos de animales y transportes',memoria:'Memoria',cuerpo:'Partes del cuerpo',contar:'Contar',colores:'Colores',puzzle:'Rompecabezas',excava:'Cavar en la arena',riega:'Regar',
+const SKILL={'ingles-hello':'Inglés: saludos','ingles-colors':'Inglés: colores','ingles-numbers':'Inglés: números','ingles-numeros':'Inglés: contar','ingles-animals':'Inglés: animales',busca:'Reconocer palabras (¿Dónde está?)',sonidos:'Sonidos de animales y transportes',memoria:'Memoria',cuerpo:'Partes del cuerpo',contar:'Contar',colores:'Colores',puzzle:'Rompecabezas',excava:'Cavar en la arena',riega:'Regar',
   'dentro-fuera':'Dentro / fuera',vestir:'Ropa según el tiempo',transportes:'Transportes por tierra, aire y agua',tamanos:'Grande / mediano / pequeño',otono:'Otoño',frutas:'Seguir un pedido (frutas)','frio-calor':'Frío / calor',
   formas:'Formas',familia:'Familia',casa:'Las partes de la casa',armar:'Armar por partes','arriba-abajo':'Arriba / abajo',arrastra:'Clasificar arrastrando',atrapa:'Atrapar lo que se pide',
   'dia-hoy':'Asamblea: qué día es hoy','dia-manana':'Asamblea: qué día es mañana',calendario:'Asamblea: el número del día','asamblea-dianoche':'Asamblea: día o noche','asamblea-ropa':'Asamblea: ropa según el tiempo','asamblea-estacion':'Asamblea: estación del año','asamblea-siguiente':'Asamblea: qué estación viene',
@@ -4488,7 +4684,7 @@ function openAdult(){
   lockDown=false;lockHold=0;try{speechSynthesis.cancel()}catch(e){}
   const el=document.getElementById('adult');el.hidden=false;
   const tmOf=L=>L.map(t=>{const n=gDone(t),N=t.games.length;return `<div class="tm ${tst(t.id).done?'done':''}"><b>${esc(V(t.n))}</b>${n}/${N} juegos${tst(t.id).done?' · completo 🌼':''}<div class="bar"><i style="width:${Math.round(n/N*100)}%"></i></div></div>`}).join('');
-  const tm=[['Jardín de 3 años',[...T3,C3]],['Bosque de 4 años',[...T4,C4]],['Montaña de 5 años',[...T5,C5]],['Canciones, rutinas y trazos',[CAN,RUT,TRZ]],['Días especiales',FIESTAS]].map(([h,L],i)=>`<section><h3>${h}</h3><div class="temas">${tmOf(L)}</div></section>`).join('');
+  const tm=[['Jardín de 3 años',[...T3,C3]],['Bosque de 4 años',[...T4,C4]],['Montaña de 5 años',[...T5,C5]],['Canciones, rutinas y trazos',[CAN,RUT,TRZ]],['Días especiales',FIESTAS],['Rincón del inglés',ING]].map(([h,L],i)=>`<section><h3>${h}</h3><div class="temas">${tmOf(L)}</div></section>`).join('');
   const vales=S.vales.map((v,i)=>`<div class="row vale"><label class="opt"><input type="checkbox" data-von="${i}" ${v.on?'checked':''}></label><input data-vtxt="${i}" maxlength="60" value="${esc(v.txt)}" style="flex:1;min-width:180px"><label>🪙 <input type="number" data-vp="${i}" min="5" max="500" value="${v.p}" style="width:70px"></label></div>`).join('');
   const pend=S.valesLog.map((v,i)=>[v,i]).filter(([v])=>!v.given).map(([v,i])=>`<div class="row"><span>🎟️ ${esc(v.txt)} <small>(${v.d.slice(5).split('-').reverse().join('/')})</small></span><button data-vgive="${i}">Entregado ✔</button></div>`).join('');
   const sk=Object.keys(S.stats).filter(k=>S.stats[k].ok+S.stats[k].err>0).sort((a,b)=>(S.stats[b].ok+S.stats[b].err)-(S.stats[a].ok+S.stats[a].err)).map(k=>{const s=S.stats[k],n=s.ok+s.err,r=Math.round(s.ok/n*100);
@@ -4501,7 +4697,7 @@ function openAdult(){
   el.querySelector('.body').innerHTML=`
   <section><h3>Modo de juego</h3>
    <div class="row">${[['camino','<b>Camino</b> (recomendado): todo se abre de a uno'],['libre','<b>Libre</b> (todo abierto)']].map(([k,l])=>`<label class="opt"><input type="radio" name="a-mode" value="${k}" ${(k==='libre')===!!S.unlockAll?'checked':''}> ${l}</label>`).join('')}</div>
-   <p class="note"><b>Camino:</b> los temas son un camino y se abren de a uno; dentro de cada tema, los juegos también se abren en orden. El botón verde del mapa lleva siempre al que sigue y lo ya jugado se puede repetir. El Bosque de 4 años y la Montaña de 5 años se abren con la edad elegida o al juntar 6 flores en la zona anterior. Canciones, rutinas, trazos y días especiales se abren al terminar 1, 2, 3 y 4 temas.</p>
+   <p class="note"><b>Camino:</b> los temas son un camino y se abren de a uno; dentro de cada tema, los juegos también se abren en orden. El botón verde del mapa lleva siempre al que sigue y lo ya jugado se puede repetir. El Bosque de 4 años y la Montaña de 5 años se abren con la edad elegida o al juntar 6 flores en la zona anterior. Las canciones se abren al terminar 1 tema del camino; las rutinas y el Rincón del inglés, al terminar 2; los trazos, 3, y los días especiales, 4.</p>
    <p class="note"><b>Libre:</b> se puede elegir cualquier tema, cualquier juego y cualquier zona, también las de 4 y 5 años, sin importar la edad. Se puede cambiar en cualquier momento y no se pierde nada de lo jugado.</p></section>
   <section><h3>Perfil</h3>
    <label>Nombre de quien juega <input id="a-name" maxlength="20" value="${esc(S.name||'')}" placeholder="Opcional"></label>
@@ -4525,12 +4721,19 @@ function openAdult(){
    ${pend?`<h4>Vales por entregar</h4>${pend}`:''}</section>
   ${sug?`<section><h3>Lo que sigue</h3><p class="tip">Próximo tema del camino: <b>${esc(V(sug.n))}</b>. Para seguir fuera de la pantalla: ${esc(tx(sug.tip||'nombrar juntos las cosas del tema que encuentren en casa o en la calle.'))}</p></section>`:''}
   <section><h3>Asambleas</h3><p class="note">El tiempo que eligió y cómo se sentía cada día.</p><div class="cal">${cal}</div></section>
-  <section><h3>Cómo le va</h3>${sk?`<table><thead><tr><th>Habilidad</th><th>Aciertos</th><th>Intentos</th><th></th></tr></thead><tbody>${sk}</tbody></table>`:'<p class="note">Todavía no hay datos.</p>'}</section>
+  <section><h3>Cómo le va</h3><p class="note">Con esto Tito arma cada día un <b>repaso</b> de 3 juegos: primero los de lo que le cuesta y, si no hay, los que jugó hace más tiempo. El botón verde del mapa pasa una vez por día por el repaso cuando hay algo que cuesta; también se abre con la lupa de arriba del mapa.</p>${sk?`<table><thead><tr><th>Habilidad</th><th>Aciertos</th><th>Intentos</th><th></th></tr></thead><tbody>${sk}</tbody></table>`:'<p class="note">Todavía no hay datos.</p>'}</section>
+  <section><h3>Copia de seguridad</h3>
+   <p class="note">Guarda todo el progreso (el camino, las monedas, la casa de Tito, las figuritas y los ajustes) para pasarlo a otro dispositivo o recuperarlo si se borran los datos del navegador. Conviene hacer una copia cada tanto.</p>
+   <div class="row"><button id="a-bk-dl">⬇️ Descargar copia</button><button id="a-bk-code">🔑 Ver código de copia</button><label class="opt" style="cursor:pointer">📂 Cargar archivo de copia<input type="file" id="a-bk-file" accept=".json,.txt,application/json,text/plain" hidden></label></div>
+   <textarea id="a-bk-txt" rows="3" style="width:100%;box-sizing:border-box;font:13px/1.3 monospace;border:2px solid var(--ink);border-radius:12px;padding:8px;background:#fff" placeholder="Acá aparece el código para copiar, o pegá acá un código para recuperar una copia."></textarea>
+   <div class="row"><button id="a-bk-copy">📋 Copiar código</button><button id="a-bk-load">♻️ Recuperar con este código</button></div>
+   <div id="a-bk-msg" class="note"></div></section>
   <section><h3>Instalar en el celular o la tablet</h3>${installHTML()}</section>
   <section><h3>Ir a</h3><div class="row"><button data-go="map">Mapa</button><button data-go="asamblea">Asamblea</button><button data-go="jardin">Jardín de 3 años</button><button data-go="bosque">Bosque de 4 años</button><button data-go="montana">Montaña de 5 años</button><button data-go="fiestas">Días especiales</button><button data-go="tienda">Tienda</button><button data-go="casaTito">Casa de Tito</button><button data-go="album">Álbum</button><button data-go="intro">Ver el cuento del inicio</button></div>
    <div class="row"><select id="a-tema">${TEMAS.map(t=>`<option value="${t.id}">${esc(V(t.n))}</option>`).join('')}</select><button id="a-gotema">Ir al tema</button></div></section>
   <section><h3>Empezar de cero</h3><button id="a-reset" class="danger">Borrar todo el progreso</button><span id="a-confirm" hidden> ¿Seguro? <button id="a-yes" class="danger">Sí, borrar</button> <button id="a-no">No</button></span></section>`;
   const q=s=>el.querySelector(s);
+  bkWire(q);
   q('#a-name').oninput=e=>{S.name=e.target.value.trim().slice(0,20);save()};
   el.querySelectorAll('[name=a-age]').forEach(r=>r.onchange=()=>{S.age=+r.value;ADAPT=0;save()});
   el.querySelectorAll('[name=a-var]').forEach(r=>r.onchange=()=>{S.variant=r.value;save();pickVoice();say(tx('¡Hola! Soy Tito. ¿Jugamos? Tocá la plaza.'))});
@@ -4609,6 +4812,31 @@ function frame(now){
 window.__cl={go,get S(){return S},get scene(){return scene},get name(){return sceneName},SCENES,TEMA,TEMAS,
   tap(x,y){scene.down&&scene.down(x,y);scene.up&&scene.up(x,y)},drag(a,b,c,d){scene.down(a,b);scene.move&&scene.move(c,d);scene.up&&scene.up(c,d)},
   hover(x,y){MX=x;MY=y;mouseOn=true},T:()=>T,say,openAdult,closeAdult};
+
+/* ---------- copia de seguridad del progreso ---------- */
+const bk64=u=>{let s='';for(let i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(s)};
+const bkUn64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function bkEncode(){const j=JSON.stringify(S);
+  if(typeof CompressionStream==='function'){try{const st=new Blob([j]).stream().pipeThrough(new CompressionStream('gzip'));return 'CURIO1.'+bk64(new Uint8Array(await new Response(st).arrayBuffer()))}catch(e){}}
+  return 'CURIO0.'+bk64(new TextEncoder().encode(j))}
+async function bkDecode(code){code=String(code||'').trim();let j;
+  if(code.startsWith('{'))j=code;
+  else{code=code.replace(/\s+/g,'');const m=code.match(/^CURIO([01])\.([A-Za-z0-9+/=]+)$/);if(!m)throw new Error('formato');const u=bkUn64(m[2]);
+    if(m[1]==='1'){if(typeof DecompressionStream!=='function')throw new Error('navegador');j=await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('gzip'))).text()}
+    else j=new TextDecoder().decode(u)}
+  const d=JSON.parse(j);if(!d||typeof d!=='object'||typeof d.temas!=='object')throw new Error('formato');return d}
+function bkWire(q){const msg=(h)=>{q('#a-bk-msg').innerHTML=h},ta=q('#a-bk-txt');
+  q('#a-bk-code').onclick=async()=>{ta.value=await bkEncode();ta.select();msg('Este código tiene todo el progreso. Copialo y guardalo, por ejemplo mandándotelo por mensaje.')};
+  q('#a-bk-copy').onclick=async()=>{if(!ta.value.startsWith('CURIO'))ta.value=await bkEncode();ta.select();let ok=false;try{await navigator.clipboard.writeText(ta.value);ok=true}catch(e){try{ok=document.execCommand('copy')}catch(e2){}}
+    msg(ok?'✅ Código copiado.':'Seleccioná el código de arriba y copialo a mano.')};
+  q('#a-bk-dl').onclick=()=>{const b=new Blob([JSON.stringify(S)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='curiolandia-copia-'+today()+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);
+    msg('Si no se descargó nada, usá el código de copia.')};
+  const ask=async(src)=>{let d;try{d=await bkDecode(src)}catch(e){msg(e.message==='navegador'?'Este navegador no puede abrir ese código. Probá con el archivo de copia.':'❌ Eso no parece una copia de Curiolandia. Revisá que el código esté completo.');return}
+    const nT=Object.values(d.temas||{}).filter(t=>t&&t.done).length,nG=Object.values(d.temas||{}).reduce((a,t)=>a+Object.keys((t&&t.g)||{}).length,0);
+    msg(`Copia encontrada${d.name?' de <b>'+esc(d.name)+'</b>':''}: ${nT} temas terminados, ${nG} juegos jugados y ${d.coins||0} monedas. <b>Reemplaza el progreso actual de este dispositivo.</b> <button id="a-bk-ok" class="danger">Sí, recuperar esta copia</button>`);
+    q('#a-bk-ok').onclick=()=>{try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){msg('❌ No se pudo guardar en este navegador.');return}location.reload()}};
+  q('#a-bk-load').onclick=()=>ask(ta.value);
+  q('#a-bk-file').onchange=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;f.text().then(t=>ask(t))}}
 Promise.race([Promise.all([document.fonts.load(`700 100px Andika`),document.fonts.load(`700 100px Fredoka`)]),new Promise(r=>setTimeout(r,2500))]).catch(()=>{}).then(()=>{go('title');requestAnimationFrame(frame)});
 </script>
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))</script></html>

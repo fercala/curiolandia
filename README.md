@@ -26,3 +26,6 @@ Versión 3:
 - **La casa de Tito en el mapa**, grande y a la vista: crece al terminar 2, 5, 9 y 14 temas (jardín con cerca, segundo piso, torre con bandera y castillo con arcoíris).
 - **Pipo, el dinosaurio de Tito**: aparece como huevo y nace y crece a medida que se terminan juegos.
 - **Modo de juego** en la zona de adultos: *Camino* (por defecto, todo se abre de a uno) o *Libre* (todos los temas, juegos y zonas abiertos, también los de 4 y 5 años). Se puede cambiar cuando se quiera sin perder lo jugado.
+- **Rincón del inglés**: saludos, colores, números y animales en inglés, con voz en inglés. Se abre al terminar 2 temas y tiene su propio camino.
+- **Repaso con Tito**: cada día arma un repaso de 3 juegos con lo que más cuesta (o lo que se jugó hace más tiempo). El botón verde pasa por el repaso una vez por día y también se abre con la lupa de arriba del mapa.
+- **Copia de seguridad** en la zona de adultos: descargar un archivo o copiar un código con todo el progreso, para pasarlo a otro dispositivo o recuperarlo.
