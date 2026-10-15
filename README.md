@@ -9,4 +9,12 @@ Jugar: **https://fercala.github.io/curiolandia/**
 - Todo queda guardado en el dispositivo. No hay cuentas, anuncios ni compras.
 - Zona de adultos: mantener apretado el candado de abajo a la derecha 3 segundos.
 
-Versión 1: la Asamblea (3, 4 y 5 años), el Jardín de los 3 años (12 temas) y el Rincón de los Conceptos. El Bosque de 4 años y la Montaña de 5 años llegan en las próximas versiones.
+Versión 2:
+
+- **Asamblea diaria** para 3, 4 y 5 años, con fiesta el día del cumpleaños (torta, velitas y canción).
+- **Jardín de 3 años**, **Bosque de 4 años** y **Montaña de 5 años**: 12 temas cada uno, más su Rincón de los Conceptos. Cada tema trae un cuento corto que narra Tito, con preguntas al final.
+- **Canciones** (días, estaciones, colores y meses) con dibujos que se mueven al ritmo.
+- **Rutinas y hábitos**: lavarse las manos, los dientes, ordenar los juguetes, ir a dormir.
+- **Trazos**: líneas, curvas, zigzag y espirales para preparar la mano antes de escribir (sigue en Letrilandia).
+- **Días especiales**: cumpleaños, Navidad, Carnaval y Día del Libro.
+- **Monedas y tienda**: gana monedas jugando y las cambia por ropa y colores para Tito, cosas para su casa, juguetes, mascotas y vales para canjear en la vida real (los vales los elige la familia en la zona de adultos). Las zonas se abren por edad o juntando flores, y las cosas más especiales de la tienda, con estrellas. No hay compras con dinero real ni premios al azar.
