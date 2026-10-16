@@ -1212,8 +1212,9 @@ const esta=k=>(isPl(k)?'¿Dónde están ':'¿Dónde está ')+nameT(k)+'?';
 const eseEs=k=>{const n=nameT(k),a=(n.match(/^(el|la|los|las) /)||[])[1];return ({el:'Ese es ',la:'Esa es ',los:'Esos son ',las:'Esas son '}[a]||'Es ')+n};
 const NUM=['cero','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve','diez'];
 function plural(k){const PLX={lapiz:'lápices',pez:'peces',avion:'aviones',leon:'leones',corazon:'corazones',tobogan:'toboganes',uva:'uvas',gafas:'anteojos'};
-  if(PLX[k])return tx(PLX[k]); const w=Wn(k);
-  if(/[aeiouáéó]$/i.test(w))return w+'s'; if(/z$/.test(w))return w.slice(0,-1)+'ces';
+  if(PLX[k])return tx(PLX[k]); const w=Wn(k),i=w.search(/ (de|del|para|con) /);
+  if(i>0)return plW(w.slice(0,i))+w.slice(i); return plW(w)}
+function plW(w){if(/[aeiouáéó]$/i.test(w))return w+'s'; if(/z$/.test(w))return w.slice(0,-1)+'ces';
   return w.replace(/ón$/,'on').replace(/ín$/,'in').replace(/án$/,'an')+'es'}
 const fem=k=>/^(la|las) /.test(nameT(k));
 const unN=(n,k)=>n===1?(fem(k)?'una ':'un ')+Wn(k):NUM[n]+' '+plural(k);
@@ -1530,12 +1531,12 @@ function Cuenta(cfg,onDone){
       const sz=n<=3?220:n<=5?180:140,cols=Math.min(n,5),rows=Math.ceil(n/cols);
       this.objs=Array.from({length:n},(_,j)=>({x:900-(Math.min(cols,n-Math.floor(j/cols)*cols)-1)*(sz+20)/2+(j%cols)*(sz+20),y:370-(rows-1)*(sz+10)/2+Math.floor(j/cols)*(sz+10),s:sz,c:0,in:T+j*.08}));
       if(cfg.one){this.objs=[{x:900,y:380,s:380,c:0,in:T,one:1}]}
-      this.opts=null;later(300,()=>say(cfg.one?cfg.ask(this):'Vamos a contar '+plural(this.k)+'. Tocá cada una.'.replace('cada una',fem(this.k)?'cada una':'cada uno')))},
+      this.opts=null;later(300,()=>say(cfg.one?cfg.ask(this):'Vamos a contar '+plural(this.k)+'. Tocá cada '+(fem(this.k)?'una.':'uno.')))},
     prompt(){say(this.phase==='count'?(cfg.one?cfg.ask(this):'Tocá cada uno para contar.'):'¿Cuántos hay?')},
     hint(){if(this.phase==='count'){if(cfg.one)return null;const o=this.objs.find(o=>!o.c);return o?{x:o.x,y:o.y,r:o.s*.55}:null}const o=this.opts&&this.opts.find(o=>o.n===this.n);return o?{x:o.x,y:o.y,r:110}:null},
     askHow(){this.phase='choose';const ns=[this.n];const n=Math.min(nOpts()+1,3);while(ns.length<n){const v=ri(1,Math.max(3,mx));if(!ns.includes(v))ns.push(v)}
       this.opts=shuffle(ns).map((v,j,a)=>({n:v,x:900-(a.length-1)*130+j*260,y:740,in:T+j*.1}));
-      say(cfg.one?cfg.how(this):'¿Cuántos '+plural(this.k)+' hay? Tocá el número.'.replace('Cuántos',fem(this.k)?'Cuántas':'Cuántos'))},
+      say(cfg.one?cfg.how(this):'¿'+(fem(this.k)?'Cuántas ':'Cuántos ')+plural(this.k)+' hay? Tocá el número.')},
     draw(){cfg.bg();
       if(cfg.one){const o=this.objs[0];cfg.drawOne(this,o)}
       else for(const o of this.objs){const ap=clamp((T-o.in)*3,0,1),hs=o.c?1:hv(o,hC(o.x,o.y,o.s*.5));ctx.save();ctx.translate(o.x,o.y);const b=o.c?1+Math.max(0,1-(T-o.c)*3)*.2:1;ctx.scale((ap<1?back(ap):1)*hs*b,(ap<1?back(ap):1)*hs*b);thing(this.k,0,0,o.s);ctx.restore();
@@ -2367,7 +2368,7 @@ const T4=[
     ref(r){r.seq.forEach((j,q)=>{const x=900-(r.seq.length-1)*95+q*190;if(q===r.blank){ctx.setLineDash([12,10]);rr(x-75,300-58,150,106,16);fillStroke('#FFF3B0',6,'#FFC93C');ctx.setLineDash([]);text('?',x,320,60,'#FFA94D',{f:LF})}else dayCard(j).draw(x,300,170)})},
     gen(){const st=ri(0,AGE()>=5?6:2),len=AGE()<=3?3:4,seq=Array.from({length:len},(_,q)=>(st+q)%7),blank=ri(1,len-1),ans=seq[blank];
       const others=shuffle([0,1,2,3,4,5,6].filter(x=>x!==ans)).slice(0,Math.max(1,nOpts()-1));const read=seq.map((j,q)=>q===blank?'mmm...':DIASL[j]).join(', ');
-      const A=dayCard(ans);return {seq,blank,words:[A,...others.map(dayCard)],ok:[A],ask:cap(read)+'. ¿Qué día falta?',okSay:()=>'¡Sí! Falta el '+DIASL[ans]+'.',badSay:w=>'Ese es '+V(w.name)+'. '+cap(read)+'.'}},
+      const A=dayCard(ans);return {seq,blank,words:[A,...others.map(dayCard)],ok:[A],ask:cap(read)+(/\.\.\.$/.test(read)?' ':'. ')+'¿Qué día falta?',okSay:()=>'¡Sí! Falta el '+DIASL[ans]+'.',badSay:w=>'Ese es '+V(w.name)+'. '+cap(read)+(/\.\.\.$/.test(read)?'':'.')}},
     },d)},
   {t:'finde',icon:'parque',name:'Escuela o fin de semana',make:(d,t)=>Arrastra({rounds:2,key:'dias-finde',bg:t.bg,
     why:(it,z)=>z.id==='escuela'?'El '+DIASL[it.k.day]+' no hay escuela. ¡Es fin de semana!':'El '+DIASL[it.k.day]+' es día de escuela.',placeSay:(it,z)=>'El '+DIASL[it.k.day]+(z.id==='escuela'?' vamos a la escuela.':' es fin de semana.'),
